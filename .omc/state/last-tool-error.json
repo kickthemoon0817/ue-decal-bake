@@ -1,0 +1,7 @@
+{
+  "tool_name": "WebFetch",
+  "tool_input_preview": "{\"url\":\"https://docs.unrealengine.com/5.2/en-US/API/Developer/MaterialBaking/\",\"prompt\":\"Extract all class names, function signatures, and struct definitions from the MaterialBaking module documentati...",
+  "error": "Request failed with status code 403",
+  "timestamp": "2026-04-03T06:16:12.800Z",
+  "retry_count": 7
+}
