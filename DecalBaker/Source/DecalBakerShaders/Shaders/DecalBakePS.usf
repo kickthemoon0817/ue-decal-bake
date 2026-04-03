@@ -1,0 +1,88 @@
+// Pixel shader for decal baking.
+// Projects the decal onto the mesh in UV space and outputs per-channel PBR data
+// via multiple render targets (MRT).
+
+#include "/Engine/Private/Common.ush"
+
+// Decal projection: world-to-decal-local matrix (normalized to [-1,1])
+float4x4 DecalProjectionMatrix;
+
+// Decal forward direction in world space (for back-face rejection)
+float3 DecalForwardDir;
+
+// Per-decal opacity multiplier
+float DecalOpacity;
+
+// Decal material textures
+Texture2D DecalBaseColorTex;
+SamplerState DecalBaseColorSampler;
+
+Texture2D DecalNormalTex;
+SamplerState DecalNormalSampler;
+
+Texture2D DecalRoughnessTex;
+SamplerState DecalRoughnessSampler;
+
+Texture2D DecalMetallicTex;
+SamplerState DecalMetallicSampler;
+
+Texture2D DecalEmissiveTex;
+SamplerState DecalEmissiveSampler;
+
+// Flags for which channels the decal material provides (1.0 = has texture, 0.0 = skip)
+float HasBaseColor;
+float HasNormal;
+float HasRoughness;
+float HasMetallic;
+float HasEmissive;
+
+void MainPS(
+    in float4 InPosition : SV_Position,
+    in float3 InWorldPos : TEXCOORD0,
+    in float3 InWorldNormal : TEXCOORD1,
+    in float2 InUV : TEXCOORD2,
+    out float4 OutBaseColor : SV_Target0,
+    out float4 OutNormal : SV_Target1,
+    out float4 OutRoughnessMetallic : SV_Target2,
+    out float4 OutEmissive : SV_Target3,
+    out float4 OutOpacity : SV_Target4
+)
+{
+    // Transform world position into decal local space [-1,1]
+    float4 DecalLocal = mul(DecalProjectionMatrix, float4(InWorldPos, 1.0));
+    float3 DecalLocalPos = DecalLocal.xyz;
+
+    // Clip: discard fragments outside the decal projection box
+    if (any(abs(DecalLocalPos) > 1.0))
+    {
+        discard;
+    }
+
+    // Back-face rejection: skip surfaces facing away from decal projection direction
+    float3 NormalWS = normalize(InWorldNormal);
+    if (dot(NormalWS, DecalForwardDir) > 0.0)
+    {
+        discard;
+    }
+
+    // Compute decal UV from local YZ position
+    // Y -> U, Z -> V, remapped from [-1,1] to [0,1]
+    float2 DecalUV = DecalLocalPos.yz * 0.5 + 0.5;
+
+    // Sample decal textures
+    float4 BaseColor = DecalBaseColorTex.Sample(DecalBaseColorSampler, DecalUV);
+    float4 Normal = DecalNormalTex.Sample(DecalNormalSampler, DecalUV);
+    float Roughness = DecalRoughnessTex.Sample(DecalRoughnessSampler, DecalUV).r;
+    float Metallic = DecalMetallicTex.Sample(DecalMetallicSampler, DecalUV).r;
+    float4 Emissive = DecalEmissiveTex.Sample(DecalEmissiveSampler, DecalUV);
+
+    // Compute final opacity from base color alpha * per-decal opacity
+    float FinalOpacity = BaseColor.a * DecalOpacity;
+
+    // Output: alpha channel controls blend-state compositing (SrcAlpha/InvSrcAlpha)
+    OutBaseColor = float4(BaseColor.rgb, FinalOpacity * HasBaseColor);
+    OutNormal = float4(Normal.rgb, FinalOpacity * HasNormal);
+    OutRoughnessMetallic = float4(Roughness, Metallic, 0.0, FinalOpacity * max(HasRoughness, HasMetallic));
+    OutEmissive = float4(Emissive.rgb, FinalOpacity * HasEmissive);
+    OutOpacity = float4(FinalOpacity, 0.0, 0.0, 1.0);
+}
