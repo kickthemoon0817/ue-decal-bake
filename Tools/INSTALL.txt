@@ -1,0 +1,90 @@
+============================================
+  DecalBaker — Installation Guide
+============================================
+
+DecalBaker bakes deferred decals into mesh
+textures for USD export to Isaac Sim.
+
+--------------------------------------------
+  OPTION 1: Automatic (Recommended)
+--------------------------------------------
+
+1. Double-click install_plugin.py
+   (or run: python install_plugin.py)
+
+2. Select your UE project when prompted
+
+3. Open your project in Unreal Engine
+
+4. Find "Decal Baker" in the toolbar
+
+
+--------------------------------------------
+  OPTION 2: Manual
+--------------------------------------------
+
+1. Copy the "DecalBaker" folder into your
+   UE project's "Plugins" folder:
+
+   MyProject/
+     Plugins/
+       DecalBaker/    <-- paste here
+     MyProject.uproject
+
+2. Open your project in Unreal Engine
+
+3. If prompted to rebuild, click "Yes"
+
+4. Find "Decal Baker" in the toolbar
+
+
+--------------------------------------------
+  OPTION 3: From Source
+--------------------------------------------
+
+1. Clone the repo:
+   git clone https://github.com/kickthemoon0817/ue-decal-bake.git
+
+2. Copy DecalBaker/ to your project's
+   Plugins/ folder
+
+3. Build the project
+
+
+--------------------------------------------
+  USING THE PLUGIN
+--------------------------------------------
+
+1. Toolbar > "Decal Baker" opens the panel
+
+2. Configure:
+   - Output Resolution (default: 2048)
+   - UV Strategy (default: Auto)
+   - Output Path (default: /Game/BakedDecals/)
+
+3. Select meshes > "Bake Selected"
+   or click "Bake All"
+
+4. Export via Omniverse Connector or
+   File > Export All > USD
+
+5. Use "Revert All" to undo baking
+
+
+--------------------------------------------
+  UNINSTALLING
+--------------------------------------------
+
+Run: python install_plugin.py --uninstall
+
+Or manually:
+1. Delete Plugins/DecalBaker/ from your project
+2. Remove "DecalBaker" from the Plugins list
+   in your .uproject file
+
+
+--------------------------------------------
+  SUPPORT
+--------------------------------------------
+
+Issues: github.com/kickthemoon0817/ue-decal-bake
