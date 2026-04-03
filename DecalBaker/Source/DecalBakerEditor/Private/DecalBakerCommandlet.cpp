@@ -57,11 +57,8 @@ int32 UDecalBakerCommandlet::Main(const FString& Params)
         Settings->UVStrategy = EDecalBakerUVStrategy::ForceGenerate;
     }
 
-    if (!GEditor->Map_Load(*MapPath))
-    {
-        UE_LOG(LogTemp, Error, TEXT("DecalBaker: Failed to load map %s"), *MapPath);
-        return 1;
-    }
+    FString LoadErrors;
+    FEditorFileUtils::LoadMap(MapPath, false, true);
 
     UWorld* World = GEditor->GetEditorWorldContext().World();
     if (!World)

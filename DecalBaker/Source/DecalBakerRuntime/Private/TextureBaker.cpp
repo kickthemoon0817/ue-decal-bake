@@ -162,8 +162,7 @@ UTexture2D* FTextureBaker::GetTextureFromMaterial(
     if (!Material) return nullptr;
 
     TArray<UTexture*> Textures;
-    Material->GetUsedTextures(Textures, EMaterialQualityLevel::High, true,
-        GMaxRHIFeatureLevel, true);
+    Material->GetUsedTextures(Textures);
 
     for (UTexture* Tex : Textures)
     {

@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Framework/Commands/Commands.h"
-#include "EditorStyleSet.h"
+#include "Styling/AppStyle.h"
 
 class FDecalBakerEditorCommands : public TCommands<FDecalBakerEditorCommands>
 {
@@ -12,7 +12,7 @@ public:
             TEXT("DecalBaker"),
             NSLOCTEXT("Contexts", "DecalBaker", "Decal Baker"),
             NAME_None,
-            FEditorStyle::GetStyleSetName())
+            FAppStyle::GetAppStyleSetName())
     {
     }
 

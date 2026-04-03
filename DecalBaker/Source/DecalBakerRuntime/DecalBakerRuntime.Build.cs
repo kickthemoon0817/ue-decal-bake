@@ -11,6 +11,7 @@ public class DecalBakerRuntime : ModuleRules
             "Core",
             "CoreUObject",
             "Engine",
+            "DeveloperSettings",
             "RenderCore",
             "RHI",
             "MeshDescription",

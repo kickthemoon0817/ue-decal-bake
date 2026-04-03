@@ -70,7 +70,7 @@ void FDecalBakerEditorModule::RegisterMenuExtensions()
         FDecalBakerEditorCommands::Get().OpenPanel,
         LOCTEXT("ToolbarButton", "Decal Baker"),
         LOCTEXT("ToolbarTooltip", "Open the Decal Baker panel to bake decals into mesh textures"),
-        FSlateIcon(FEditorStyle::GetStyleSetName(), "LevelEditor.ViewOptions")
+        FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.ViewOptions")
     ));
 
     // Window menu
