@@ -44,7 +44,9 @@ def create_decal_material(name):
 # ---- Build Scene ----
 
 def build_scene():
-    # Create a new empty level
+    # Create a new empty level (delete existing first if present)
+    if editor_asset_lib.does_asset_exist("/Game/Demo/Maps/DecalBakeDemo"):
+        editor_asset_lib.delete_asset("/Game/Demo/Maps/DecalBakeDemo")
     level_editor_subsystem.new_level("/Game/Demo/Maps/DecalBakeDemo")
 
     # Materials
@@ -128,10 +130,35 @@ def build_scene():
     )
     sky.set_actor_label("Demo_SkyLight")
 
-    # Save the level
-    level_editor_subsystem.save_current_level()
+    # Count spawned actors to verify
+    actors = editor_actor_subsystem.get_all_level_actors()
+    unreal.log_warning(f"ACTORS_SPAWNED: {len(actors)} actors in level")
 
-    unreal.log_warning("DEMO_COMPLETE: Level saved at /Game/Demo/Maps/DecalBakeDemo")
+    # Save — try multiple methods
+    world = editor_actor_subsystem.get_world()
+
+    # Method 1: save_map with path
+    try:
+        unreal.EditorLoadingAndSavingUtils.save_map(world, "/Game/Demo/Maps/DecalBakeDemo")
+        unreal.log_warning("SAVE_METHOD_1: EditorLoadingAndSavingUtils.save_map OK")
+    except Exception as e:
+        unreal.log_warning(f"SAVE_METHOD_1 failed: {e}")
+
+    # Method 2: save_dirty_packages
+    try:
+        unreal.EditorLoadingAndSavingUtils.save_dirty_packages(False, True)
+        unreal.log_warning("SAVE_METHOD_2: save_dirty_packages OK")
+    except Exception as e:
+        unreal.log_warning(f"SAVE_METHOD_2 failed: {e}")
+
+    # Method 3: level editor subsystem
+    try:
+        level_editor_subsystem.save_all_dirty_levels()
+        unreal.log_warning("SAVE_METHOD_3: save_all_dirty_levels OK")
+    except Exception as e:
+        unreal.log_warning(f"SAVE_METHOD_3 failed: {e}")
+
+    unreal.log_warning("DEMO_COMPLETE")
 
 
 if __name__ == "__main__" or True:
