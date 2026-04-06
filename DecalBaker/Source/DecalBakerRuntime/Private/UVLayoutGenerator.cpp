@@ -1,9 +1,13 @@
 #include "UVLayoutGenerator.h"
+#include "DecalBakerLog.h"
 #include "UVOverlapDetector.h"
 #include "Engine/StaticMesh.h"
 #include "StaticMeshResources.h"
+
+#if WITH_EDITOR
 #include "MeshDescription.h"
 #include "StaticMeshAttributes.h"
+#endif
 
 FMeshUVStatus FUVLayoutGenerator::ResolveUVChannel(
     UStaticMesh* StaticMesh,
@@ -20,7 +24,7 @@ FMeshUVStatus FUVLayoutGenerator::ResolveUVChannel(
         Status.bHasOverlap = FUVOverlapDetector::AnalyzeMeshUVs(StaticMesh, 0).bHasOverlap;
         if (Status.bHasOverlap)
         {
-            UE_LOG(LogTemp, Warning, TEXT("DecalBaker: UV0 has overlaps on %s, bake may produce artifacts"),
+            UE_LOG(LogDecalBaker, Warning, TEXT("DecalBaker: UV0 has overlaps on %s, bake may produce artifacts"),
                 *StaticMesh->GetName());
         }
         break;
@@ -30,7 +34,7 @@ FMeshUVStatus FUVLayoutGenerator::ResolveUVChannel(
         Status.bHasOverlap = FUVOverlapDetector::AnalyzeMeshUVs(StaticMesh, 1).bHasOverlap;
         if (Status.bHasOverlap)
         {
-            UE_LOG(LogTemp, Warning, TEXT("DecalBaker: UV1 has overlaps on %s, bake may produce artifacts"),
+            UE_LOG(LogDecalBaker, Warning, TEXT("DecalBaker: UV1 has overlaps on %s, bake may produce artifacts"),
                 *StaticMesh->GetName());
         }
         break;
@@ -45,7 +49,7 @@ FMeshUVStatus FUVLayoutGenerator::ResolveUVChannel(
         }
         else
         {
-            UE_LOG(LogTemp, Error, TEXT("DecalBaker: Failed to generate UVs for %s"),
+            UE_LOG(LogDecalBaker, Error, TEXT("DecalBaker: Failed to generate UVs for %s"),
                 *StaticMesh->GetName());
         }
         break;
@@ -61,6 +65,11 @@ FMeshUVStatus FUVLayoutGenerator::ResolveUVChannel(
             break;
         }
 
+        if (!StaticMesh->GetRenderData() || StaticMesh->GetRenderData()->LODResources.Num() == 0)
+        {
+            Status.BakeUVChannel = 0;
+            break;
+        }
         const FStaticMeshLODResources& LOD = StaticMesh->GetRenderData()->LODResources[0];
         int32 NumUVChannels = LOD.VertexBuffers.StaticMeshVertexBuffer.GetNumTexCoords();
         if (NumUVChannels > 1)
@@ -81,7 +90,7 @@ FMeshUVStatus FUVLayoutGenerator::ResolveUVChannel(
             break;
         }
 
-        UE_LOG(LogTemp, Warning,
+        UE_LOG(LogDecalBaker, Warning,
             TEXT("DecalBaker: All UV strategies exhausted for %s, falling back to UV0 with potential artifacts"),
             *StaticMesh->GetName());
         Status.BakeUVChannel = 0;
@@ -97,6 +106,10 @@ int32 FUVLayoutGenerator::GenerateNonOverlappingUVs(
     UStaticMesh* StaticMesh,
     int32 UVPadding)
 {
+#if !WITH_EDITOR
+    UE_LOG(LogDecalBaker, Error, TEXT("DecalBaker: UV generation requires an editor build"));
+    return -1;
+#else
     if (!StaticMesh) return -1;
 
     FMeshDescription* MeshDesc = StaticMesh->GetMeshDescription(0);
@@ -108,7 +121,7 @@ int32 FUVLayoutGenerator::GenerateNonOverlappingUVs(
     int32 NewChannel = ExistingChannels;
     if (NewChannel >= MAX_STATIC_TEXCOORDS)
     {
-        UE_LOG(LogTemp, Error, TEXT("DecalBaker: Cannot add UV channel - max %d reached on %s"),
+        UE_LOG(LogDecalBaker, Error, TEXT("DecalBaker: Cannot add UV channel - max %d reached on %s"),
             MAX_STATIC_TEXCOORDS, *StaticMesh->GetName());
         return -1;
     }
@@ -124,8 +137,9 @@ int32 FUVLayoutGenerator::GenerateNonOverlappingUVs(
     StaticMesh->Build(false);
     StaticMesh->PostEditChange();
 
-    UE_LOG(LogTemp, Log, TEXT("DecalBaker: Generated non-overlapping UVs at channel %d for %s"),
+    UE_LOG(LogDecalBaker, Log, TEXT("DecalBaker: Generated non-overlapping UVs at channel %d for %s"),
         NewChannel, *StaticMesh->GetName());
 
     return NewChannel;
+#endif
 }

@@ -78,6 +78,7 @@ FMeshUVStatus FUVOverlapDetector::AnalyzeMeshUVs(
 {
     FMeshUVStatus Status;
     if (!StaticMesh || !StaticMesh->GetRenderData()) return Status;
+    if (StaticMesh->GetRenderData()->LODResources.Num() == 0) return Status;
 
     const FStaticMeshLODResources& LOD = StaticMesh->GetRenderData()->LODResources[0];
     const int32 NumUVChannels = LOD.VertexBuffers.StaticMeshVertexBuffer.GetNumTexCoords();
@@ -137,7 +138,7 @@ bool FUVOverlapDetector::SharesEdge(
     const FVector2D& A0, const FVector2D& A1, const FVector2D& A2,
     const FVector2D& B0, const FVector2D& B1, const FVector2D& B2)
 {
-    const float Tolerance = KINDA_SMALL_NUMBER;
+    const float Tolerance = SMALL_NUMBER;
     FVector2D VertsA[3] = { A0, A1, A2 };
     FVector2D VertsB[3] = { B0, B1, B2 };
 
