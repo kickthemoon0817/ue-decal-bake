@@ -87,4 +87,4 @@ Or manually:
   SUPPORT
 --------------------------------------------
 
-Issues: github.com/kickthemoon0817/ue-decal-bake
+Issues: https://github.com/kickthemoon0817/ue-decal-bake/issues

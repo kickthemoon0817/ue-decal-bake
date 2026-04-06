@@ -13,6 +13,12 @@
 
 An Unreal Engine 5.3+ editor plugin that **bakes deferred decals into mesh textures** for export to USD, FBX, and OBJ. Designed for the **Omniverse Connector to Isaac Sim** pipeline where runtime decals are lost during export.
 
+## Requirements
+
+- **Unreal Engine 5.3+**
+- **DBuffer rendering mode enabled** (Project Settings > Rendering > DBuffer Decals)
+- **Python Editor Script Plugin** (required for automation scripts — enable in Plugins > Scripting)
+
 ## Problem
 
 UE deferred decals are a screen-space rendering effect -- they exist only at runtime and are invisible to any export pipeline. When exporting scenes via the Omniverse Connector to USD for NVIDIA Isaac Sim, all decals disappear.
@@ -63,8 +69,29 @@ Select actors in the viewport > **Right-click > Bake Decals to Textures**
 
 ### Commandlet
 
+**Windows:**
 ```bash
 UnrealEditor-Cmd.exe MyProject.uproject -run=DecalBaker \
+    -map=/Game/Maps/Warehouse \
+    -output=/Game/BakedDecals/ \
+    -resolution=2048 \
+    -uvstrategy=auto
+```
+
+**Mac:**
+```bash
+/Users/Shared/Epic\ Games/UE_5.3/Engine/Binaries/Mac/UnrealEditor \
+    MyProject.uproject -run=DecalBaker \
+    -map=/Game/Maps/Warehouse \
+    -output=/Game/BakedDecals/ \
+    -resolution=2048 \
+    -uvstrategy=auto
+```
+
+**Linux:**
+```bash
+~/UnrealEngine/Engine/Binaries/Linux/UnrealEditor \
+    MyProject.uproject -run=DecalBaker \
     -map=/Game/Maps/Warehouse \
     -output=/Game/BakedDecals/ \
     -resolution=2048 \

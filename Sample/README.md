@@ -1,17 +1,24 @@
 # DecalBaker Demo Project
 
+> **Note:** This sample project has Python remote execution disabled by default. Enable it manually in Project Settings if needed for automation.
+
 A lightweight UE 5.7 sample project demonstrating the DecalBaker plugin.
 
 ## Setup
 
-1. **Copy the plugin** into this project:
+1. **Copy the plugin** into this project using the installer (recommended):
    ```bash
-   cp -r ../../DecalBaker Sample/DecalBakerDemo/Plugins/DecalBaker
+   python3 ../Tools/install_plugin.py   # Mac/Linux
+   py ..\Tools\install_plugin.py        # Windows
+   ```
+   Or copy manually:
+   ```bash
+   cp -r ../../../DecalBaker DecalBakerDemo/Plugins/DecalBaker
    ```
    Or create a symlink:
    ```bash
    mkdir -p DecalBakerDemo/Plugins
-   ln -s $(pwd)/../../DecalBaker DecalBakerDemo/Plugins/DecalBaker
+   ln -s $(pwd)/../../../DecalBaker DecalBakerDemo/Plugins/DecalBaker
    ```
 
 2. **Open the project** in UE 5.7:
@@ -26,7 +33,8 @@ A lightweight UE 5.7 sample project demonstrating the DecalBaker plugin.
 
 Open the **Output Log** (Window > Output Log), then run:
 ```
-py setup_demo_scene.py
+python3 setup_demo_scene.py   # Mac/Linux
+py setup_demo_scene.py        # Windows
 ```
 
 This creates:
@@ -40,7 +48,8 @@ This creates:
 
 After assigning decal materials, run:
 ```
-py run_bake_and_export.py
+python3 run_bake_and_export.py   # Mac/Linux
+py run_bake_and_export.py        # Windows
 ```
 
 This will:
