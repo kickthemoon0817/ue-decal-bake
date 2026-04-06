@@ -2,6 +2,7 @@
 #include "DecalBakerEditorCommands.h"
 #include "SDecalBakerWidget.h"
 #include "OmniverseExportHook.h"
+#include "DecalBakerLog.h"
 #include "DecalBakerSubsystem.h"
 #include "LevelEditor.h"
 #include "ToolMenus.h"
@@ -20,16 +21,55 @@ void FDecalBakerEditorModule::StartupModule()
     FDecalBakerEditorCommands::Register();
 
     CommandList = MakeShareable(new FUICommandList);
+
+    // Wire all commands to actions
     CommandList->MapAction(
         FDecalBakerEditorCommands::Get().OpenPanel,
         FExecuteAction::CreateRaw(this, &FDecalBakerEditorModule::OnToolbarButtonClicked)
+    );
+
+    CommandList->MapAction(
+        FDecalBakerEditorCommands::Get().BakeSelected,
+        FExecuteAction::CreateLambda([]()
+        {
+            UWorld* World = GEditor->GetEditorWorldContext().World();
+            UDecalBakerSubsystem* Subsystem = GEngine->GetEngineSubsystem<UDecalBakerSubsystem>();
+            if (!World || !Subsystem) return;
+            TArray<UStaticMeshComponent*> Selected = SDecalBakerWidget::GetSelectedStaticMeshComponents();
+            if (Selected.Num() > 0)
+            {
+                Subsystem->BakeDecals(World, Selected);
+            }
+        })
+    );
+
+    CommandList->MapAction(
+        FDecalBakerEditorCommands::Get().BakeAll,
+        FExecuteAction::CreateLambda([]()
+        {
+            UWorld* World = GEditor->GetEditorWorldContext().World();
+            UDecalBakerSubsystem* Subsystem = GEngine->GetEngineSubsystem<UDecalBakerSubsystem>();
+            if (!World || !Subsystem) return;
+            TArray<UStaticMeshComponent*> Empty;
+            Subsystem->BakeDecals(World, Empty);
+        })
+    );
+
+    CommandList->MapAction(
+        FDecalBakerEditorCommands::Get().RevertAll,
+        FExecuteAction::CreateLambda([]()
+        {
+            // RevertAll via command requires manifest from subsystem - no-op without active widget
+            UE_LOG(LogDecalBaker, Log, TEXT("DecalBaker: Use the panel to revert bakes"));
+        })
     );
 
     FGlobalTabmanager::Get()->RegisterNomadTabSpawner(
         DecalBakerTabName,
         FOnSpawnTab::CreateRaw(this, &FDecalBakerEditorModule::OnSpawnTab))
         .SetDisplayName(LOCTEXT("TabTitle", "Decal Baker"))
-        .SetMenuType(ETabSpawnerMenuType::Hidden);
+        .SetGroup(WorkspaceMenu::GetMenuStructure().GetLevelEditorCategory())
+        .SetMenuType(ETabSpawnerMenuType::Enabled);
 
     UToolMenus::RegisterStartupCallback(FSimpleMulticastDelegate::FDelegate::CreateLambda([this]()
     {
@@ -70,7 +110,7 @@ void FDecalBakerEditorModule::RegisterMenuExtensions()
         FDecalBakerEditorCommands::Get().OpenPanel,
         LOCTEXT("ToolbarButton", "Decal Baker"),
         LOCTEXT("ToolbarTooltip", "Open the Decal Baker panel to bake decals into mesh textures"),
-        FSlateIcon(FAppStyle::GetAppStyleSetName(), "LevelEditor.ViewOptions")
+        FSlateIcon(FAppStyle::GetAppStyleSetName(), "MaterialEditor.Apply")
     ));
 
     // Window menu
@@ -82,7 +122,7 @@ void FDecalBakerEditorModule::RegisterMenuExtensions()
         LOCTEXT("WindowMenuItem", "Decal Baker")
     );
 
-    // Right-click context menu
+    // Right-click context menu — uses shared selection helper
     UToolMenu* ActorContextMenu = UToolMenus::Get()->ExtendMenu("LevelEditor.ActorContextMenu");
     FToolMenuSection& ContextSection = ActorContextMenu->FindOrAddSection("DecalBaker");
     ContextSection.AddMenuEntry(
@@ -96,20 +136,11 @@ void FDecalBakerEditorModule::RegisterMenuExtensions()
             UDecalBakerSubsystem* Subsystem = GEngine->GetEngineSubsystem<UDecalBakerSubsystem>();
             if (!World || !Subsystem) return;
 
-            TArray<UStaticMeshComponent*> SelectedMeshes;
-            USelection* Selection = GEditor->GetSelectedActors();
-            for (int32 i = 0; i < Selection->Num(); ++i)
+            TArray<UStaticMeshComponent*> SelectedMeshes = SDecalBakerWidget::GetSelectedStaticMeshComponents();
+            if (SelectedMeshes.Num() > 0)
             {
-                AActor* Actor = Cast<AActor>(Selection->GetSelectedObject(i));
-                if (Actor)
-                {
-                    TArray<UStaticMeshComponent*> Components;
-                    Actor->GetComponents<UStaticMeshComponent>(Components);
-                    SelectedMeshes.Append(Components);
-                }
+                Subsystem->BakeDecals(World, SelectedMeshes);
             }
-
-            Subsystem->BakeDecals(World, SelectedMeshes);
         }))
     );
 }

@@ -15,6 +15,9 @@ public:
 
     void Construct(const FArguments& InArgs);
 
+    /** Get selected static mesh components from the editor selection (shared helper) */
+    static TArray<UStaticMeshComponent*> GetSelectedStaticMeshComponents();
+
 private:
     FReply OnBakeSelectedClicked();
     FReply OnBakeAllClicked();
@@ -22,5 +25,11 @@ private:
 
     void ExecuteBake(const TArray<UStaticMeshComponent*>& Scope);
 
+    bool HasSelection() const;
+    bool HasManifest() const;
+
+    void SetStatusText(const FText& Text);
+
     FDecalBakeManifest LastManifest;
+    TSharedPtr<STextBlock> StatusTextBlock;
 };
