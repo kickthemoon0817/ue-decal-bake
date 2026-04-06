@@ -34,10 +34,11 @@ struct DECALBAKERRUNTIME_API FDecalMeshPair
     UPROPERTY()
     TWeakObjectPtr<UStaticMeshComponent> MeshComponent;
 
-    /** World-to-decal-local projection matrix */
+    /** World-to-decal-local projection matrix (not exposed to Blueprint — FMatrix is not a UPROPERTY type) */
     FMatrix ProjectionMatrix;
 
     /** Decal sort order for compositing priority */
+    UPROPERTY(BlueprintReadOnly, Category = "DecalBaker")
     int32 SortOrder = 0;
 };
 
@@ -86,11 +87,14 @@ struct DECALBAKERRUNTIME_API FMeshUVStatus
     GENERATED_BODY()
 
     /** True if UV0 has overlapping triangles */
+    UPROPERTY(BlueprintReadOnly, Category = "DecalBaker")
     bool bHasOverlap = false;
 
     /** UV channel index to use for baking (0, 1, or generated) */
+    UPROPERTY(BlueprintReadOnly, Category = "DecalBaker")
     int32 BakeUVChannel = 0;
 
     /** True if a new UV channel was generated */
+    UPROPERTY(BlueprintReadOnly, Category = "DecalBaker")
     bool bGeneratedUV = false;
 };
