@@ -25,7 +25,7 @@ public:
         const TArray<UStaticMeshComponent*>& InScope);
 
     UFUNCTION(BlueprintCallable, Category = "DecalBaker")
-    void RevertBake(const FDecalBakeManifest& Manifest);
+    void RevertBake(const FDecalBakeManifest& Manifest, UWorld* World);
 
 private:
     TArray<UDecalComponent*> FindAllDecals(UWorld* World) const;
