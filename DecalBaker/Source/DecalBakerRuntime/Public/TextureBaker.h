@@ -46,10 +46,6 @@ private:
         UMaterialInterface* Material,
         EMaterialProperty Property);
 
-    static UTexture2D* GetTextureFromDecalMaterial(
-        UMaterialInterface* DecalMaterial,
-        EMaterialProperty Property);
-
     static UTexture2D* RenderTargetToTexture(
         UTextureRenderTarget2D* RT,
         const FString& AssetPath,
