@@ -22,7 +22,7 @@ bool FManifestSerializationTest::RunTest(const FString& Parameters)
     Entry.Resolution = 2048;
     Entry.DecalActorNames.Add(TEXT("DecalActor_12"));
     Entry.DecalActorNames.Add(TEXT("DecalActor_15"));
-    Entry.BakeTime = FDateTime::Now();
+    Entry.BakeTime = FDateTime(2024, 1, 1);
     Manifest.Entries.Add(Entry);
 
     FString JsonString;
@@ -36,7 +36,18 @@ bool FManifestSerializationTest::RunTest(const FString& Parameters)
     TestEqual(TEXT("Version matches"), Loaded.Version, 1);
     TestEqual(TEXT("Entry count matches"), Loaded.Entries.Num(), 1);
     TestEqual(TEXT("Mesh path matches"), Loaded.Entries[0].MeshPath, Entry.MeshPath);
+    TestEqual(TEXT("Resolution matches"), Loaded.Entries[0].Resolution, 2048);
+    TestEqual(TEXT("UVChannel matches"), Loaded.Entries[0].UVChannel, 0);
+    TestEqual(TEXT("OriginalMaterialPath matches"),
+        Loaded.Entries[0].OriginalMaterialPath, Entry.OriginalMaterialPath);
+    TestEqual(TEXT("BakedMaterialPath matches"),
+        Loaded.Entries[0].BakedMaterialPath, Entry.BakedMaterialPath);
+    TestEqual(TEXT("BakeTime matches"), Loaded.Entries[0].BakeTime, FDateTime(2024, 1, 1));
     TestEqual(TEXT("Decal count matches"), Loaded.Entries[0].DecalActorNames.Num(), 2);
+    TestEqual(TEXT("First decal name matches"),
+        Loaded.Entries[0].DecalActorNames[0], FString(TEXT("DecalActor_12")));
+    TestEqual(TEXT("Second decal name matches"),
+        Loaded.Entries[0].DecalActorNames[1], FString(TEXT("DecalActor_15")));
 
     return true;
 }

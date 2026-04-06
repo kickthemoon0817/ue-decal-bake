@@ -11,6 +11,7 @@ public class DecalBakerTests : ModuleRules
             "Core",
             "CoreUObject",
             "Engine",
+            "AutomationController",
             "DecalBakerRuntime"
         });
     }

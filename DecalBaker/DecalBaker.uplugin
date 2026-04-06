@@ -23,6 +23,11 @@
             "Name": "DecalBakerEditor",
             "Type": "Editor",
             "LoadingPhase": "Default"
+        },
+        {
+            "Name": "DecalBakerTests",
+            "Type": "Editor",
+            "LoadingPhase": "Default"
         }
     ]
 }

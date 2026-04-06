@@ -41,8 +41,13 @@ bool FDecalBakerDiscoveryTest::RunTest(const FString& Parameters)
     TArray<UStaticMeshComponent*> Empty;
     TArray<FDecalMeshPair> Pairs = Subsystem->DiscoverDecalMeshPairs(World, Empty);
 
-    // Validates the discovery logic runs without crashing
-    // Actual pair count depends on mesh having valid bounds
+    // In a minimal test world without loaded meshes/materials, the mesh has no
+    // valid render bounds, so discovery should return zero pairs.
+    TestEqual(TEXT("Empty scope yields zero pairs"), Pairs.Num(), 0);
+
+    // NOTE: Integration tests that verify non-zero pair discovery require a
+    // fully loaded level with real decal components and static meshes that
+    // have valid bounds and materials.
 
     // Cleanup
     World->DestroyWorld(false);
