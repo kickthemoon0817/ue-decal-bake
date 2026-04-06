@@ -4,7 +4,7 @@
 
 #include "/Engine/Private/Common.ush"
 
-// UV channel index to use for baking (0, 1, 2, ...)
+// UV channel index to use for baking (passed as float, used as uint)
 float UVChannelIndex;
 
 void MainVS(
@@ -19,14 +19,15 @@ void MainVS(
     out float2 OutUV : TEXCOORD2
 )
 {
-    // Select UV channel
+    // Select UV channel using integer comparison
+    uint Channel = (uint)UVChannelIndex;
     float2 UV;
-    if (UVChannelIndex < 0.5)
-        UV = InUV0;
-    else if (UVChannelIndex < 1.5)
-        UV = InUV1;
-    else
-        UV = InUV2;
+    switch (Channel)
+    {
+        case 0u:  UV = InUV0; break;
+        case 1u:  UV = InUV1; break;
+        default:  UV = InUV2; break;
+    }
 
     // Map UV [0,1] to clip space [-1,1], flip Y for render target convention
     OutPosition = float4(

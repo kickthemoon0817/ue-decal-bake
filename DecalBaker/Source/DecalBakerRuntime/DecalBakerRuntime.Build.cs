@@ -20,7 +20,6 @@ public class DecalBakerRuntime : ModuleRules
 
         PrivateDependencyModuleNames.AddRange(new string[]
         {
-            "MaterialBaking",
             "Json",
             "JsonUtilities"
         });

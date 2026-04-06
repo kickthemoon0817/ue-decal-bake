@@ -23,7 +23,9 @@ public class DecalBakerEditor : ModuleRules
             "EditorStyle",
             "ToolMenus",
             "LevelEditor",
-            "WorkspaceMenuStructure"
+            "WorkspaceMenuStructure",
+            "MaterialBaking",
+            "PropertyEditor"
         });
     }
 }

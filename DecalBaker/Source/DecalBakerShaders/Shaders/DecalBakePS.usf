@@ -69,12 +69,33 @@ void MainPS(
     // Y -> U, Z -> V, remapped from [-1,1] to [0,1]
     float2 DecalUV = DecalLocalPos.yz * 0.5 + 0.5;
 
-    // Sample decal textures
-    float4 BaseColor = DecalBaseColorTex.Sample(DecalBaseColorSampler, DecalUV);
-    float4 Normal = DecalNormalTex.Sample(DecalNormalSampler, DecalUV);
-    float Roughness = DecalRoughnessTex.Sample(DecalRoughnessSampler, DecalUV).r;
-    float Metallic = DecalMetallicTex.Sample(DecalMetallicSampler, DecalUV).r;
-    float4 Emissive = DecalEmissiveTex.Sample(DecalEmissiveSampler, DecalUV);
+    // Sample decal textures only when channel is active to save bandwidth
+    float4 BaseColor = float4(0, 0, 0, 0);
+    float4 Normal = float4(0.5, 0.5, 1.0, 0);
+    float Roughness = 0;
+    float Metallic = 0;
+    float4 Emissive = float4(0, 0, 0, 0);
+
+    if (HasBaseColor > 0.5)
+    {
+        BaseColor = DecalBaseColorTex.Sample(DecalBaseColorSampler, DecalUV);
+    }
+    if (HasNormal > 0.5)
+    {
+        Normal = DecalNormalTex.Sample(DecalNormalSampler, DecalUV);
+    }
+    if (HasRoughness > 0.5)
+    {
+        Roughness = DecalRoughnessTex.Sample(DecalRoughnessSampler, DecalUV).r;
+    }
+    if (HasMetallic > 0.5)
+    {
+        Metallic = DecalMetallicTex.Sample(DecalMetallicSampler, DecalUV).r;
+    }
+    if (HasEmissive > 0.5)
+    {
+        Emissive = DecalEmissiveTex.Sample(DecalEmissiveSampler, DecalUV);
+    }
 
     // Compute final opacity from base color alpha * per-decal opacity
     float FinalOpacity = BaseColor.a * DecalOpacity;
