@@ -1,0 +1,45 @@
+// Vertex shader for decal baking.
+// Maps mesh UV coordinates to clip-space positions, effectively "unwrapping"
+// the mesh flat so the pixel shader can paint decal projections in UV space.
+
+#include "/Engine/Private/Common.ush"
+
+// UV channel index to use for baking (passed as float, used as uint)
+float UVChannelIndex;
+
+void MainVS(
+    in float3 InPosition : ATTRIBUTE0,
+    in float3 InNormal : ATTRIBUTE2,
+    in float2 InUV0 : ATTRIBUTE5,
+    in float2 InUV1 : ATTRIBUTE6,
+    in float2 InUV2 : ATTRIBUTE7,
+    out float4 OutPosition : SV_Position,
+    out float3 OutWorldPos : TEXCOORD0,
+    out float3 OutWorldNormal : TEXCOORD1,
+    out float2 OutUV : TEXCOORD2
+)
+{
+    // Select UV channel using integer comparison
+    uint Channel = (uint)UVChannelIndex;
+    float2 UV;
+    switch (Channel)
+    {
+        case 0u:  UV = InUV0; break;
+        case 1u:  UV = InUV1; break;
+        default:  UV = InUV2; break;
+    }
+
+    // Map UV [0,1] to clip space [-1,1], flip Y for render target convention
+    OutPosition = float4(
+        UV.x * 2.0 - 1.0,
+        -(UV.y * 2.0 - 1.0),
+        0.0,
+        1.0
+    );
+
+    // Pass through world position and normal for decal projection in pixel shader
+    float4 WorldPos = TransformLocalToWorld(float4(InPosition, 1.0));
+    OutWorldPos = WorldPos.xyz;
+    OutWorldNormal = TransformLocalToWorldNormal(InNormal);
+    OutUV = UV;
+}

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="decalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e94560;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6b6b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="meshGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0f3460;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#533483;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e94560;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#48dbfb;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect x="10" y="10" width="180" height="180" rx="28" ry="28" fill="url(#bgGrad)" stroke="#2a2a4a" stroke-width="2"/>
+
+  <!-- 3D Mesh surface (stylized cube face) -->
+  <path d="M 40 120 L 100 85 L 160 120 L 100 155 Z" fill="url(#meshGrad)" stroke="#4a4a7a" stroke-width="1.5" opacity="0.9"/>
+
+  <!-- UV grid lines on mesh surface -->
+  <line x1="60" y1="112.5" x2="130" y2="112.5" stroke="#4a4a7a" stroke-width="0.8" opacity="0.5"/>
+  <line x1="50" y1="120" x2="140" y2="120" stroke="#4a4a7a" stroke-width="0.8" opacity="0.5"/>
+  <line x1="70" y1="97.5" x2="70" y2="137.5" stroke="#4a4a7a" stroke-width="0.8" opacity="0.4" transform="skewX(-25) translate(30,0)"/>
+  <line x1="100" y1="85" x2="100" y2="155" stroke="#4a4a7a" stroke-width="0.8" opacity="0.5"/>
+  <line x1="130" y1="97.5" x2="130" y2="137.5" stroke="#4a4a7a" stroke-width="0.8" opacity="0.4" transform="skewX(-25) translate(30,0)"/>
+
+  <!-- Decal projection (diamond shape on the mesh) -->
+  <path d="M 85 110 L 100 100 L 115 110 L 100 120 Z" fill="url(#decalGrad)" opacity="0.85" stroke="#ff6b6b" stroke-width="1"/>
+
+  <!-- Projection lines from above -->
+  <line x1="85" y1="55" x2="85" y2="110" stroke="#e94560" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+  <line x1="115" y1="55" x2="115" y2="110" stroke="#e94560" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+  <line x1="100" y1="45" x2="100" y2="100" stroke="#e94560" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+
+  <!-- Decal source (floating stamp above) -->
+  <rect x="82" y="40" width="36" height="22" rx="3" ry="3" fill="#e94560" opacity="0.9" stroke="#ff6b6b" stroke-width="1"/>
+  <text x="100" y="55" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white" text-anchor="middle">D</text>
+
+  <!-- Bake arrow (right side) -->
+  <path d="M 148 90 C 165 90, 170 105, 165 115 L 158 108" fill="none" stroke="url(#arrowGrad)" stroke-width="2.5" stroke-linecap="round"/>
+  <polygon points="165,118 158,108 168,110" fill="#48dbfb" opacity="0.9"/>
+
+  <!-- Texture output icon (bottom right) -->
+  <rect x="145" y="130" width="28" height="28" rx="4" ry="4" fill="#0a3d62" stroke="#48dbfb" stroke-width="1.5" opacity="0.9"/>
+  <rect x="149" y="134" width="9" height="9" fill="#48dbfb" opacity="0.6"/>
+  <rect x="160" y="134" width="9" height="9" fill="#48dbfb" opacity="0.4"/>
+  <rect x="149" y="145" width="9" height="9" fill="#48dbfb" opacity="0.3"/>
+  <rect x="160" y="145" width="9" height="9" fill="#48dbfb" opacity="0.7"/>
+
+  <!-- Title text -->
+  <text x="100" y="180" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="#c0c0e0" text-anchor="middle" letter-spacing="2">DECAL BAKER</text>
+</svg>

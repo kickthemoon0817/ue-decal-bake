@@ -1,0 +1,33 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "0.1.0",
+    "FriendlyName": "DecalBaker",
+    "Description": "Bakes deferred decals into mesh textures for export (USD, FBX, OBJ)",
+    "Category": "Rendering",
+    "CreatedBy": "MauMai",
+    "CanContainContent": false,
+    "IsBetaVersion": true,
+    "Modules": [
+        {
+            "Name": "DecalBakerRuntime",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        },
+        {
+            "Name": "DecalBakerShaders",
+            "Type": "Runtime",
+            "LoadingPhase": "PostConfigInit"
+        },
+        {
+            "Name": "DecalBakerEditor",
+            "Type": "Editor",
+            "LoadingPhase": "Default"
+        },
+        {
+            "Name": "DecalBakerTests",
+            "Type": "Editor",
+            "LoadingPhase": "Default"
+        }
+    ]
+}
