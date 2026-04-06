@@ -125,5 +125,5 @@ def setup_scene():
     unreal.log("Next step: assign materials to decals, then run run_bake_and_export.py")
 
 
-if __name__ == "__main__" or True:
+if __name__ == "__main__":
     setup_scene()

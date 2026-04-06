@@ -113,5 +113,5 @@ def run():
         unreal.log_warning("DecalBaker: Export step had issues. Check logs above.")
 
 
-if __name__ == "__main__" or True:
+if __name__ == "__main__":
     run()

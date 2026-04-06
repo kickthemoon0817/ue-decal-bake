@@ -161,5 +161,5 @@ def build_scene():
     unreal.log_warning("DEMO_COMPLETE")
 
 
-if __name__ == "__main__" or True:
+if __name__ == "__main__":
     build_scene()
